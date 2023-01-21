@@ -51,11 +51,11 @@
         <MudCardActions>
             @if (!IsRunning)
             {
-                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" @onclick="StartVM">Start</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.NotStarted" Color="Color.Warning" @onclick="StartVM">Start</MudButton>
             }
             else
             {
-                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Error" @onclick="StopVM">Stop</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Stop" Color="Color.Error" @onclick="StopVM">Stop</MudButton>
             }
 
         </MudCardActions>

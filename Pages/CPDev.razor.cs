@@ -156,6 +156,8 @@ namespace BlazorVM.Pages
                 }
             }
 
+            StopVM();
+
             CPDevVM.Close();
 
             Navigation.LocationChanged -= Navigation_LocationChangedAsync;
@@ -182,10 +184,7 @@ namespace BlazorVM.Pages
 
         private void StopVM()
         {
-            if (CPDevVM.Valid)
-            {
-                timer.Enabled = false;
-            }
+            timer.Enabled = false;
         }
 
         private void RunCycle(object? sender, ElapsedEventArgs e)
