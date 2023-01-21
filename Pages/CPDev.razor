@@ -102,14 +102,17 @@ else if (Loading)
         </ToolBarContent>
         <HeaderContent>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<CPDevVariable, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<CPDevVariable, object>(x=>x.Type)">Type</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<CPDevVariable, object>(x=>x.Value)">Value</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Name"><MudHighlighter Text="@context.Name" HighlightedText="@searchName" /></MudTd>
+            <MudTd DataLabel="Type">@context.Type</MudTd>
             <MudTd DataLabel="Value">@context.Value</MudTd>
         </RowTemplate>
         <RowEditingTemplate>
             <MudTd DataLabel="Name"><MudHighlighter Text="@context.Name" HighlightedText="@searchName" /></MudTd>
+            <MudTd DataLabel="Type">@context.Type</MudTd>
             <MudTd DataLabel="Value">
                 <MudTextField @bind-Value="@context.Value" />
             </MudTd>
