@@ -24,6 +24,7 @@ extern "C"
 	float GetDataReal(unsigned int address);
 	double GetDataLReal(unsigned int address);
 
+	int GetData(unsigned int address, unsigned char len, unsigned char* buf);
 	int SetData(unsigned int address, unsigned char len, unsigned char* buf);
 
 }
