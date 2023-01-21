@@ -12,9 +12,10 @@
 <PageTitle>CPDev Simulator</PageTitle>
 
 
-@if (!CPDevVM.Valid && !Loading)
+<MudText Typo="Typo.h4" GutterBottom="true">CPDev Online Simulator</MudText>
+
+@if (!CPDevVM.Valid)
 {
-    <MudText Typo="Typo.h4" GutterBottom="true">CPDev online simulator</MudText>
     <MudText Class="mb-8">Select both .XCP and .DCP files</MudText>
     <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept=".XCP,.DCP" OnFilesChanged="OnFileChanged" multiple>
     <ButtonTemplate>
@@ -28,13 +29,6 @@
     </ButtonTemplate>
     </MudFileUpload>
 }
-else
-{
-    <MudText Typo="Typo.h4" GutterBottom="true">CPDev Simulator</MudText>
-}
-
-
-
 
 @if (CPDevVM.Valid && !Loading)
 {
@@ -61,7 +55,7 @@ else
             }
             else
             {
-                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" @onclick="StopVM">Stop</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Error" @onclick="StopVM">Stop</MudButton>
             }
 
         </MudCardActions>

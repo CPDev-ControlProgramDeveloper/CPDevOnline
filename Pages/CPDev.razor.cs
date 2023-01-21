@@ -40,27 +40,14 @@ namespace BlazorVM.Pages
             timer.Elapsed += RunCycle;
         }
 
-        private async Task OnRomUploaded(IReadOnlyList<IBrowserFile> files)
-        {
-            foreach (var file in files)
-            {
-                if (file.Name.EndsWith(".xcp"))
-                {
-                    await LoadXCP(file);
-                }
-
-                if (file.Name.EndsWith(".dcp"))
-                {
-                    await LoadDCP(file);
-                }
-            }
-
-        }
-
         async Task OnFileChanged(InputFileChangeEventArgs e)
         {
             try
             {
+                bool dcpLoaded = false;
+
+                Loading = true;
+
                 foreach (var file in e.GetMultipleFiles(e.FileCount))
                 {
                     if (file.Name.EndsWith(".xcp"))
@@ -71,13 +58,23 @@ namespace BlazorVM.Pages
                     if (file.Name.EndsWith(".dcp"))
                     {
                         await LoadDCP(file);
+                        dcpLoaded = true;
                     }
                 }
+
+                if (!dcpLoaded)
+                {
+                    Snackbar.Add("Cannot open the files. Have you selected valid CPDev files (XCP and DCP) ?", Severity.Error);
+                }
+
             }
             catch (Exception ex)
             {
-                Loading = false;
                 Snackbar.Add("Cannot open the file. Is this a valid CPDev file ?", Severity.Error);
+            }
+            finally
+            {
+                Loading = false;
             }
         }
 
