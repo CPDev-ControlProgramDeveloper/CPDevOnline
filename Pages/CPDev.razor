@@ -15,7 +15,7 @@
 @if (!CPDevVM.Valid && !Loading)
 {
     <MudText Typo="Typo.h4" GutterBottom="true">CPDev online simulator</MudText>
-    <MudText Class="mb-8">Select .XCP and .DCP files</MudText>
+    <MudText Class="mb-8">Select both .XCP and .DCP files</MudText>
     <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept=".XCP,.DCP" OnFilesChanged="OnFileChanged" multiple>
     <ButtonTemplate>
         <MudButton HtmlTag="label"
