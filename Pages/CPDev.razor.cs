@@ -121,10 +121,10 @@ namespace BlazorVM.Pages
                 {
                     CPDevVariable var = new CPDevVariable();
 
-                    var.Name = g.Attribute("LName").Value;
-                    var.Address = uint.Parse(g.Attribute("Addr").Value);
-                    var.Size = int.Parse(g.Attribute("Size").Value);
-                    var.Type = g.Attribute("Type").Value;
+                    var.Name = g.Attribute("LName")!.Value;
+                    var.Address = uint.Parse(g.Attribute("Addr")!.Value);
+                    var.Size = int.Parse(g.Attribute("Size")!.Value);
+                    var.Type = g.Attribute("Type")!.Value;
 
                     CPDevVM.Variables.Add(var);
                 }

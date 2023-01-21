@@ -134,7 +134,7 @@ void VMLinux::VMP_PostCycle(void)
 		return;
 
 	stopTime = millis();
-	printf(" Stop at %llu", stopTime);
+	//printf(" Stop at %llu", stopTime);
 
 	cycleEnd = cStartTime + task_cycle * 1000; 
 

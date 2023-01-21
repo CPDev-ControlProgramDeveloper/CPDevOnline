@@ -31,20 +31,31 @@ extern "C"
 
 int CPDev_LoadProgram(unsigned char data[], int length)
 {
+	int res;
 	//printf("Output: %x %x %x %x\n", data[0], data[1], data[2], data[3]);
 	if (!xcp) free(xcp);
 	xcp = (WM_BYTE*)malloc(length);
 	memcpy(xcp, data, length);
-	return cpdev->VMP_LoadProgramFromArray(xcp, DEFAULT_DATA_SIZE);
+	res = cpdev->VMP_LoadProgramFromArray(xcp, DEFAULT_DATA_SIZE);
+
+	if (res == 0)
+	{
+		cpdev->task_cycle = 500;
+		cpdev->WM_Initialize(WM_MODE_FIRST_START | WM_MODE_NORMAL);
+	}
+
+	return res;
+
 }
 
 
 int CPDev_Init()
 {
 	cpdev = new VMLinux();
-	cpdev->task_cycle = 500;
-	cpdev->WM_Initialize(WM_MODE_FIRST_START | WM_MODE_NORMAL);
 	//cpdev->VMP_LoadProgramFromArray(WeJeStSt_xcp, DEFAULT_DATA_SIZE);
+	//cpdev->task_cycle = 500;
+	//cpdev->WM_Initialize(WM_MODE_FIRST_START | WM_MODE_NORMAL);
+
 	return 0;
 }
 
