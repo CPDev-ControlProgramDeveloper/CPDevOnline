@@ -1,0 +1,125 @@
+﻿@page "/"
+@page "/cpdev"
+
+@using System.Runtime.InteropServices
+@using BlazorVM.Native
+
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>CPDev Simulator</PageTitle>
+
+
+@if (!CPDevVM.Valid && !Loading)
+{
+    <MudText Typo="Typo.h4" GutterBottom="true">CPDev online simulator</MudText>
+    <MudText Class="mb-8">Select .XCP and .DCP files</MudText>
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept=".XCP,.DCP" OnFilesChanged="OnFileChanged" multiple>
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   for="@context">
+            Open program files
+        </MudButton>
+    </ButtonTemplate>
+    </MudFileUpload>
+}
+else
+{
+    <MudText Typo="Typo.h4" GutterBottom="true">CPDev Simulator</MudText>
+}
+
+
+
+
+@if (CPDevVM.Valid && !Loading)
+{
+    <MudCard Outlined="true">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@fileName</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Default" @onclick="CloseImage"  />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudPaper Class="d-flex flex-row gap-4" Elevation="0">
+                <MudPaper Class="d-inline-flex flex-column flex-grow-1 gap-4">
+                </MudPaper>
+            </MudPaper>
+
+        </MudCardContent>
+        <MudCardActions>
+            @if (!IsRunning)
+            {
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" @onclick="StartVM">Start</MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Warning" @onclick="StopVM">Stop</MudButton>
+            }
+
+        </MudCardActions>
+    </MudCard>
+}
+else if (Loading)
+{
+    <MudCard Outlined="true">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@fileName</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudSkeleton Width="30%" Height="42px;" />
+            <MudSkeleton Width="15%" />
+            <MudSkeleton Width="20%" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+            <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+        </MudCardActions>
+    </MudCard>
+
+}
+
+@if (CPDevVM.Valid)
+{
+
+    <MudTable Items="CPDevVM.Variables" Hover="true" SortLabel="Sort By" Elevation="0" RowsPerPage="50" Dense="true" MultiSelection="true"
+          @bind-SelectedItems="selectedItems" Filter="new Func<CPDevVariable,bool>(FilterName)" @ref="mudTable"
+          ReadOnly="false" CanCancelEdit="true" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="ItemHasBeenCommitted">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Global variables</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchName" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" DebounceInterval="200"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<CPDevVariable, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<CPDevVariable, object>(x=>x.Value)">Value</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name"><MudHighlighter Text="@context.Name" HighlightedText="@searchName" /></MudTd>
+            <MudTd DataLabel="Value">@context.Value</MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            <MudTd DataLabel="Name"><MudHighlighter Text="@context.Name" HighlightedText="@searchName" /></MudTd>
+            <MudTd DataLabel="Value">
+                <MudTextField @bind-Value="@context.Value" />
+            </MudTd>
+        </RowEditingTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+
+
