@@ -41,7 +41,7 @@ namespace BlazorVM.Native
 
         IntPtr vm = IntPtr.Zero;
 
-        public bool Valid { get; private set; } = false;
+        public bool Valid { get; set; } = false;
 
         public bool Modified { get; private set; } = false;
 

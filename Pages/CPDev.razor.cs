@@ -52,24 +52,29 @@ namespace BlazorVM.Pages
                 {
                     if (file.Name.EndsWith(".xcp"))
                     {
-                        await LoadXCP(file);
+                        if (!await LoadXCP(file))
+                        {
+                            break;
+                        }
                     }
 
                     if (file.Name.EndsWith(".dcp"))
                     {
-                        await LoadDCP(file);
-                        dcpLoaded = true;
+                        if (await LoadDCP(file))
+                            dcpLoaded = true;
                     }
                 }
 
                 if (!dcpLoaded)
                 {
+                    CPDevVM.Valid = false;
                     Snackbar.Add("Cannot open the files. Have you selected valid CPDev files (XCP and DCP) ?", Severity.Error);
                 }
 
             }
             catch (Exception ex)
             {
+                CPDevVM.Valid = false;
                 Snackbar.Add("Cannot open the file. Is this a valid CPDev file ?", Severity.Error);
             }
             finally
@@ -78,7 +83,7 @@ namespace BlazorVM.Pages
             }
         }
 
-        private async Task LoadXCP(IBrowserFile file)
+        private async Task<bool> LoadXCP(IBrowserFile file)
         {
             var fileData = new byte[file.Size];
 
@@ -92,30 +97,44 @@ namespace BlazorVM.Pages
             {
                 //currentCount = CPDevVM.FileCount;
                 //this.StateHasChanged();
-
                 IsSaved = false;
+                return true;
             }
             else
             {
                 Snackbar.Add("Cannot open the file. Is this a valid XCP ?", Severity.Error);
+                return false;
             }
         }
 
-        private async Task LoadDCP(IBrowserFile file)
+        private async Task<bool> LoadDCP(IBrowserFile file)
         {
             var fileData = new byte[file.Size];
 
-            CPDevVM.Variables.Clear();
+            MemoryStream ms = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(ms);
+            await Task.Delay(1);
+
+            ms.Seek(0, SeekOrigin.Begin);
 
             try
             {
-                MemoryStream ms = new MemoryStream();
-                await file.OpenReadStream().CopyToAsync(ms);
-                await Task.Delay(1);
-
-                ms.Seek(0, SeekOrigin.Begin);
+                CPDevVM.Variables.Clear();
 
                 XDocument xdcp = XDocument.Load(ms);
+
+                var xTarget = xdcp.XPathSelectElement("/CPDEV/TARGET");
+
+                if (xTarget != null)
+                {
+                    var addressSize = xTarget.Attribute("AddressSize");
+                    if (addressSize != null && addressSize.Value == "8")
+                    {
+                        Snackbar.Add("Only 16-bit runtime is supported !", Severity.Error);
+                        return false;
+                    }
+                }
+
                 var globals = xdcp.XPathSelectElements("/CPDEV/TARGET/GLOBAL/VAR");
                 foreach (var g in globals)
                 {
@@ -128,10 +147,13 @@ namespace BlazorVM.Pages
 
                     CPDevVM.Variables.Add(var);
                 }
+
+                return true;
             }
             catch(Exception ex)
             {
                 Snackbar.Add("Cannot open the file. Is this a valid DCP ?", Severity.Error);
+                return false;
             }
         }
 

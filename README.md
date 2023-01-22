@@ -1,6 +1,6 @@
 # CPDev Online Simulator
 
-CPDev rutime is partable to different platforms. It may be even run inside a Web browser.
+CPDev runtime is portable to different platforms. It may be even run inside a Web browser.
 
 To see a demo of a working Web-based CPDev Simulator visit: https://cpdev-controlprogramdeveloper.github.io/CPDevOnline/
 
